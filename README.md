@@ -1,6 +1,21 @@
 # Playback Data Service
 
-Fetches recently played tracks for the user logged in.
+A microservice fetching recently played tracks for the user logged in.
+
+## Tech Stack
+
+- Java + Spring Boot
+- Google Cloud PubSub
+- Spotify Web API
+- Docker
+- Maven
+- Modulith Architecture
+- Event Driven Architecture
+
+## Endpoints
+
+- GET `/playback/recently-played` - Fetch recently played tracks
+- GET `/playback/recently-played/publish` - Publish recently played tracks to PubSub
 
 ## Running in Docker locally:
 
