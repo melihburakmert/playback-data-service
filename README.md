@@ -23,5 +23,11 @@ A microservice fetching recently played tracks for the user logged in.
 `mvn jib:dockerBuild`
 - Deploy the image to Docker \
 `docker-compose up -d spotify-service`
-- Visit `localhost:8082/playback/test`
+- Visit `/playback/recently-played`
 - Login to your Spotify Account
+
+### TODO:
+
+- [ ] Add tests
+- [ ] Add CI/CD
+- [ ] Deploy on Kubernetes
