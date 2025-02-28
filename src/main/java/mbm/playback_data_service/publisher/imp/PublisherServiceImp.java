@@ -29,8 +29,8 @@ public class PublisherServiceImp implements PublisherService {
 
 
     @Override
-    public void publishPlaybackData(final PlaybackDataDto playbackDataDto) {
-        final PlaybackDataMessage playbackDataMessage = playbackDataMessageMapper.map(playbackDataDto);
+    public void publishPlaybackData(final PlaybackDataDto playbackDataDto, final String sessionId) {
+        final PlaybackDataMessage playbackDataMessage = playbackDataMessageMapper.map(playbackDataDto, sessionId);
         final String serializedMessage = serializationService.serialize(playbackDataMessage);
         streamBridge.send(publisherMqProperties.getPlaybackDataTopicName(), serializedMessage);
     }

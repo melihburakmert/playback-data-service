@@ -9,6 +9,7 @@ import mbm.playback_data_service.web.mapper.PlaybackDataResponseMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,9 +35,10 @@ public class SpotifyApiController {
         this.publisherService = publisherService;
     }
 
-    // TODO: Rename better
-    @GetMapping("/recently-played/publish")
-    public ResponseEntity<PlaybackDataResponse> getRecentlyPlayedTracks(final HttpSession session) {
+    @GetMapping("/recently-played")
+    public ResponseEntity<PlaybackDataResponse> getRecentlyPlayedTracks(
+            @RequestHeader(value = "X-Session-Id") final String sessionId,
+            final HttpSession session) {
         final String accessToken = getAccessTokenFromSession(session);
         if (accessToken == null) {
             log.info("Access token not found. Redirecting to login");
@@ -44,12 +46,12 @@ public class SpotifyApiController {
         }
 
         final PlaybackDataDto playbackDataDto = spotifyApiService.getRecentlyPlayedTracks(accessToken);
-        publisherService.publishPlaybackData(playbackDataDto);
+        publisherService.publishPlaybackData(playbackDataDto, sessionId);
 
         return ResponseEntity.accepted().build();
     }
 
-    @GetMapping("/recently-played")
+    @GetMapping("/recently-played/test")
     public ResponseEntity<PlaybackDataResponse> test(final HttpSession session) {
         final String accessToken = getAccessTokenFromSession(session);
         if (accessToken == null) {

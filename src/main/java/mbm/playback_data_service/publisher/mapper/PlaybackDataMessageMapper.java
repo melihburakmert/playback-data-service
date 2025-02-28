@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PlaybackDataMessageMapper {
-    public PlaybackDataMessage map(final PlaybackDataDto playbackDataDto) {
-        return new PlaybackDataMessage(playbackDataDto.tracks());
+    public PlaybackDataMessage map(final PlaybackDataDto playbackDataDto, final String sessionId) {
+        return new PlaybackDataMessage(playbackDataDto.tracks(), sessionId);
     }
 }

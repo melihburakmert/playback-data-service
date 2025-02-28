@@ -5,5 +5,5 @@ import mbm.playback_data_service.domain.Track;
 import java.io.Serializable;
 import java.util.List;
 
-public record PlaybackDataMessage(List<Track> tracks) implements Serializable {
+public record PlaybackDataMessage(List<Track> tracks, String sessionId) implements Serializable {
 }
