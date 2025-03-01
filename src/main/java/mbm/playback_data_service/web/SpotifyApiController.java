@@ -37,7 +37,7 @@ public class SpotifyApiController {
 
     @GetMapping("/recently-played")
     public ResponseEntity<PlaybackDataResponse> getRecentlyPlayedTracks(
-            @RequestHeader(value = "X-Session-Id") final String sessionId,
+            @RequestHeader(value = "X-Session-Id", defaultValue = "test") final String sessionId,
             final HttpSession session) {
         final String accessToken = getAccessTokenFromSession(session);
         if (accessToken == null) {

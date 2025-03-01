@@ -79,7 +79,7 @@ public class SpotifyAuthController {
     private ResponseEntity<Void> redirectToUriAndClearSession(final String redirectUri, final HttpSession session) {
         log.info("Redirecting to {}", redirectUri);
         session.removeAttribute(REDIRECT_URI);
-        return ResponseEntity.status(HttpStatus.FOUND).header(LOCATION_HEADER, redirectUri).build();
+        return buildRedirectResponse(redirectUri);
     }
 
     private void storeAccessTokenInSession(final SpotifyTokenResponse tokenResponse, final HttpSession session) {
