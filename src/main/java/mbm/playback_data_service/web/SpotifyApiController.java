@@ -1,9 +1,11 @@
 package mbm.playback_data_service.web;
 
 import lombok.extern.slf4j.Slf4j;
+import mbm.playback_data_service.domain.PlaybackDataState;
 import mbm.playback_data_service.playback.PlaybackDataDto;
 import mbm.playback_data_service.playback.PlaybackDataService;
 import mbm.playback_data_service.publisher.PublisherService;
+import mbm.playback_data_service.session.SessionStateService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +24,13 @@ public class SpotifyApiController {
 
     private final PlaybackDataService spotifyApiService;
     private final PublisherService publisherService;
+    private final SessionStateService sessionStateService;
 
     public SpotifyApiController(final PlaybackDataService spotifyApiService,
-                                final PublisherService publisherService) {
+                                final PublisherService publisherService, final SessionStateService sessionStateService) {
         this.spotifyApiService = spotifyApiService;
         this.publisherService = publisherService;
+        this.sessionStateService = sessionStateService;
     }
 
     @GetMapping("/recently-played")
@@ -34,9 +38,14 @@ public class SpotifyApiController {
             @RequestHeader(value = SESSION_HEADER) final String sessionId,
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) final String spotifyToken) {
 
-        if (spotifyToken == null || spotifyToken.isBlank()) {
+        if (isNullOrBlank(spotifyToken)) {
             log.error("Unauthorized request: No Spotify token provided.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (isPlaybackDataPublished(sessionId)) {
+            log.info("Playback data already published for session: " + sessionId);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         try {
@@ -51,5 +60,14 @@ public class SpotifyApiController {
             log.error("Error occurred while fetching recently played tracks.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private boolean isNullOrBlank(final String spotifyToken) {
+        return spotifyToken == null || spotifyToken.isBlank();
+    }
+
+    private boolean isPlaybackDataPublished(final String sessionId) {
+        final Object playbackState = sessionStateService.getSessionState(sessionId, PlaybackDataState.KEY);
+        return playbackState != null && PlaybackDataState.VALUE.equalsIgnoreCase(playbackState.toString());
     }
 }
