@@ -13,7 +13,5 @@ public class SpotifyAuthProperties {
     private String clientId;
     private String clientSecret;
     private String redirectUri;
-    private String authUri;
     private String tokenUri;
-    private String scope;
 }

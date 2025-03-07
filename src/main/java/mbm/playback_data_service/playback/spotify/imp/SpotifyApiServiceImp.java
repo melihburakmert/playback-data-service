@@ -26,20 +26,19 @@ public class SpotifyApiServiceImp implements PlaybackDataService {
     }
 
     @Override
-    public PlaybackDataDto getRecentlyPlayedTracks(final String accessToken) {
+    public PlaybackDataDto getRecentlyPlayedTracks(final String spotifyToken) {
         final String url = String.format("%s?" + LIMIT + "=%d",
                 properties.getRecentlyPlayedUri(),
                 properties.getRecentlyPlayedLimit());
 
-        final SpotifyRecentlyPlayedResponse response = getRecentlyPlayedResponse(accessToken, url);
-
+        final SpotifyRecentlyPlayedResponse response = getRecentlyPlayedResponse(spotifyToken, url);
         return spotifyResponseToDtoMapper.mapToPlaybackDataDto(response);
     }
 
-    private SpotifyRecentlyPlayedResponse getRecentlyPlayedResponse(final String accessToken, final String url) {
+    private SpotifyRecentlyPlayedResponse getRecentlyPlayedResponse(final String spotifyToken, final String url) {
         return restClient.get()
                 .uri(url)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header(HttpHeaders.AUTHORIZATION, spotifyToken)
                 .retrieve()
                 .body(SpotifyRecentlyPlayedResponse.class);
     }
